@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <ui:param name="title" value="TEST: JSF2.2 @ViewScoped references in session by navigation method: non JS version (28 May 2015)"/>
+        <title>#{title}</title>
+    </h:head>
+    <h:body>
+
+        <h2>#{title}</h2>
+
+        <p>
+            <b>Author:</b> Darren Kelly (Webel IT Australia)
+        </p>
+
+        <p>
+            <em>
+                For comparison of heap memory references to a JSF2.2 @ViewScoped @Named bean after different navigation methods.
+            </em>
+        </p>
+
+        <p>Mojarra 2.2.9; Glassfish4; NetBeans8.0.2; JDK1.7</p>
+
+        <hr/>
+
+        <p>
+            Use the @ViewScoped bean to read a simple String variable.
+        </p>
+
+        <h:panelGroup>
+            <h:outputLabel value="Backing variable: newName:" style="font-weight: bold;"/>&nbsp;
+            <h:outputText value="#{jsf22ViewBean.newName}"/>            
+        </h:panelGroup>
+
+        <hr/>
+
+        <h3>Navigate to the 'done' page using different methods then examine the heap (in NetBeans IDE or VisualVM)</h3>
+
+        <ui:param name="info_not_gc" value="@ViewScoped bean will NOT be garbage collected afterwards !"/>
+
+        <ui:param name="info_yes_gc" value="@ViewScoped bean will be garbage collected OK afterwards."/>
+
+        <ui:param name="root" value="#{request.contextPath}/" />
+
+        <p>
+            - <h:outputLink value="#{root}faces/done.xhtml">h:outputLink: GET: done</h:outputLink> 
+            : <span style="color:red">#{info_not_gc}</span>
+        </p>
+
+        <p>
+            - <h:link value="h:link: GET: done" outcome="done?faces-redirect=true"/> 
+            : <span style="color:red">#{info_not_gc} </span>
+        </p>
+
+        <p>
+            - <a href="#{root}faces/done.xhtml">HTML &lt;A&gt;: GET: done</a> 
+            : <span style="color:red">#{info_not_gc}</span>
+        </p>
+
+            <fieldset><legend>Form</legend>        
+        <h:form>
+                       
+            <p>
+                - <h:commandButton value="h:commandButton: TO 'done' via action method" action="#{jsf22ViewBean.actionDone()}"/>
+                : <span style="color:green;">#{info_yes_gc}</span>
+            </p>            
+            <p>
+                - <h:commandButton value="h:commandButton: TO 'done' via action String" action="done"/>
+                : <span style="color:green;">#{info_yes_gc}</span>
+            </p>
+
+            <hr/>
+
+            <p>
+                - <h:commandButton value="h:commandButton: STAY: action method returns 'null'" action="#{jsf22ViewBean.actionNull()}"/> : no additional @ViewScoped bean created.
+            </p>            
+
+        </h:form>
+</fieldset>
+
+        <p>
+            - <b>Browser reload of this page:</b> creates a new @ViewScoped bean, previous <span style="color:red">#{info_not_gc}</span>
+        </p>
+
+        <hr/>
+
+    </h:body>
+</html>
+

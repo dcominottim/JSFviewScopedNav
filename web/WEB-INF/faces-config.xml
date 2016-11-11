@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+ <!-- FAILS: Used for initial ConfigurableNavigationHandler based answer attempt from Kolossus
+ to question by Darren Kelly (Webel) at http://stackoverflow.com/questions/30410601/how-detect-and-remove-during-a-session-unused-viewscoped-beans-that-cant-be?answertab=active#tab-top 
+ <application>
+     <navigation-handler>com.stackoverflow.kolossus.ViewScopeCleaner</navigation-handler>
+ </application>
+ -->
+ 
+</faces-config>
