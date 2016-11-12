@@ -6,36 +6,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:head>
-        <ui:param name="title" value="TEST: JSF2.2 @ViewScoped references in session by navigation method: JS/AJAX version 14 Jun 2015"/>
+        <ui:param name="title" value="TEST: JSF2.2 @ViewScoped references in session by navigation method: reverted version 11 Nov 2016"/>
         <title>#{title}</title>
     </h:head>
     <h:body>
 
- <h:outputScript name="jsf.js" library="javax.faces" target="head" />
- 
-    <script type="text/javascript">
-        function cleanViewScope() {
-            //alert("cleanViewScope(): this"+this);// this: [object Window]  
-            alert("cleanViewScope(): this.href:"+this.href);// this.href:undefined
-            //alert("cleanViewScope(): event:"+event); //event:[object MouseEvent]
-                    //jsf.ajax.request(this, null, {this, event, {target:this.href});//SyntaxError: Unexpected token ','. Expected a ':' following the property name 'this'.
-      //jsf.ajax.request(this, null, {this, event, {target:this.href}}); //SyntaxError: Unexpected token ','. Expected a ':' following the property name 'this'.
-                    //jsf.ajax.request(this, event, {target:this.href});//typeerror undefined is not a function (evaluating 'context.element.hasAttribute("type"))
-                    //jsf.ajax.request(this, null, {target:this.href});//typeerror undefined is not a function (evaluating 'context.element.hasAttribute("type"))
-                    //alert("cleanViewScope() called");
-                    jsf.ajax.request(this, null, {execute: 'someButton', target: this.href});
-                    return false;
-                }                
-    </script>  
-        
-<script type="text/javascript">
-<!--
-function displayMessage(firstName) {
-    alert("Hello " + firstName + ", hope you like JavaScript functions!")
-}
-//-->
-</script>
-        
         <h2>#{title}</h2>
 
         <p>
@@ -48,24 +23,12 @@ function displayMessage(firstName) {
             </em>
         </p>
 
-        <p>Mojarra 2.2.9; Glassfish4; NetBeans8.0.2; JDK1.7</p>
+        <p>
+            <ui:include src="common.xhtml"/>            
+        </p>
 
         <hr/>
 
-<form>
-First name:
-<input type="input" name="yourName" />
-<input
-  type="button"
-  onclick="displayMessage(form.yourName.value)"
-  value="Display Message" />
-
-<input
-  type="button"
-  onclick="cleanViewScope()"
-  value="cleanViewScope()" />
-</form>        
-        
         <p>
             Use the @ViewScoped bean to read a simple String variable.
         </p>
@@ -90,25 +53,9 @@ First name:
             : <span style="color:red">#{info_not_gc}</span>
         </p>
 
-<h:button id="sampleButton" binding="#{sampleButton}" value="Sample" />
-<h:outputText value="sampleButton's client ID : #{sampleButton.clientId}" />
-
-        <f:phaseListener type="com.stackoverflow.kolossus.ViewScopeCleanerAjax" />
         <p>
-            - <h:link id="someButton2" onclick="cleanViewScope()" value="h:link: GET: done (with JS/AJAX intercept)" outcome="done?faces-redirect=true"/> 
-
-            <!--
-            - <h:link binding="someButton" onclick="cleanViewScope()" value="h:link: GET: done (with JS/AJAX intercept)" outcome="done?faces-redirect=true"/> 
-            //java.lang.String cannot be cast to javax.faces.component.UIComponent
-            -->
-            
-            <!--
-            <h:link onclick="jsf.ajax.request(this, null, {target:this.href}); return false;" value="h:link: GET: done (with JS/AJAX intercept)" outcome="done?faces-redirect=true"/> 
-            -->
-            
+            - <h:link value="h:link: GET: done" outcome="done?faces-redirect=true"/>             
             : <span style="color:red">#{info_not_gc} </span>
-<form>            
-</form>
         </p>
 
         <p>
