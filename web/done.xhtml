@@ -4,9 +4,10 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <ui:param name="title" value="TEST JSF2.2: target page"/>
+        <ui:param name="title" value="TEST: JSF @ViewScoped: target page"/>
         <title>#{title}</title>
     </h:head>
+
     <h:body>
 
         <h1>#{title}</h1>
@@ -15,10 +16,12 @@
             <em>Land here after different navigation methods. Contains no bean references.</em>
         </p>
 
-        <p>
-            <h:link value="h:link: GET: index" outcome="index"/>
-        </p>
-
+        <ui:include src="common.xhtml"/>
+        
+        <hr/>
+        
+        <ui:include src="links.xhtml"/>
+        
     </h:body>
 </html>
 

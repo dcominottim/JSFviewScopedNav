@@ -21,4 +21,25 @@
     <welcome-file-list>
         <welcome-file>faces/index.xhtml</welcome-file>
     </welcome-file-list>
+
+    <!--    
+<context-param>
+   <param-name>com.sun.faces.numberOfViewsInSession</param-name>
+   <param-value>15</param-value>
+</context-param>   
+-->
+
+<context-param>
+   <param-name>com.sun.faces.numberOfLogicalViews</param-name>
+   <param-value>4</param-value>
+</context-param>
+
+<!-- 2016-11-12 AFAIKT not respected alone for: omnifaces-2.5.1 -->
+<!--
+<context-param>
+   <param-name>org.omnifaces.VIEW_SCOPE_MANAGER_MAX_ACTIVE_VIEW_SCOPES</param-name>
+   <param-value>4</param-value>
+</context-param>   
+-->
+    
 </web-app>
