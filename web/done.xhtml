@@ -16,10 +16,10 @@
             <em>Land here after different navigation methods. Contains no bean references.</em>
         </p>
 
-        <ui:include src="common.xhtml"/>
-        
-        <hr/>
-        
+        <ui:include src="header.xhtml">
+            <ui:param name="author" value="#{author}"/>
+        </ui:include>
+                
         <ui:include src="links.xhtml"/>
         
     </h:body>

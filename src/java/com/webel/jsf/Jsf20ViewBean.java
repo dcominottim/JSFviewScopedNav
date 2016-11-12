@@ -1,6 +1,5 @@
 package com.webel.jsf;
 
-import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -13,7 +12,7 @@ import javax.faces.bean.ViewScoped;
 
 @ManagedBean
 @ViewScoped
-public class Jsf20ViewBean implements Serializable {
+public class Jsf20ViewBean extends AbstractViewBean {
 
     private static final Logger logger = Logger.getLogger(Jsf20ViewBean.class.getName());
     

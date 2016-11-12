@@ -3,17 +3,25 @@
 <ui:composition 
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-        
+
     xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-        <ul>
-            <li>
-                <h:link value="h:link: GET: index 1 (uses CDI-friendly JSF ViewBean)" outcome="test_cdi"/>
-            </li>
+    <style>
+        ul.spaced-list li {margin-top: 1ex;}
+    </style>
 
-            <li>
-                <h:link value="h:link: GET: index 2 (uses OmniFaces ViewBean)" outcome="test_omni"/>
-            </li>
-        </ul>
-    
+    <ul class="spaced-list">
+        <li>
+            <h:link value="TEST: JSF2.0 @ManagedBean @ViewScoped ViewBean (OBSOLETE)" outcome="test_jsf"/>
+        </li>
+
+        <li>
+            <h:link value="TEST: CDI-friendly&nbsp;&nbsp;@Named @ViewScoped ViewBean" outcome="test_cdi"/>
+        </li>
+
+        <li>
+            <h:link value="TEST: OmniFaces&nbsp;&nbsp;&nbsp;&nbsp;@Named @ViewScoped ViewBean" outcome="test_omni"/>
+        </li>
+    </ul>
+
 </ui:composition>

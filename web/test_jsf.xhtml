@@ -2,12 +2,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
     <h:head>
-        <ui:param name="title" value="TEST: JSF2.2 @ViewScoped references in session by navigation method"/>
+        <ui:param name="title" value="TEST: JSF @ManagedBean @ViewScoped held references by navigation method"/>
         <title>#{title}</title>
     </h:head>
     <h:body>
@@ -15,78 +13,59 @@
         <!-- FAILS
         <ui:include src="params.xhtml"/>
         -->
-        
+
         <ui:decorate template="params.xhtml"/>
-        
-        
+
         <h2>#{title}</h2>
 
-        <p>
-            <b>Author:</b> Darren Kelly (Webel IT Australia)
-        </p>
+        <ui:include 
+            src="header.xhtml"
+            >            
+            <ui:param name="author" value="#{author}"/>
+            <ui:param name="beantype" value="a JSF2.0-style @ViewScoped (javax.faces.bean.ViewScoped) bean"/>
+        </ui:include>
 
-        <p>
-            <em>
-                For comparison of heap memory references to a JSF2.2 @ViewScoped @Named bean after different navigation methods.
-            </em>
-        </p>
-
-        <p>
-            <ui:include src="common.xhtml"/>            
-        </p>
-
-        <hr/>
-
-        <p>
-            Use the @ViewScoped bean to read a simple String variable.
-        </p>
-
-        <h:panelGroup>
-            <h:outputLabel value="Backing variable: newName:" style="font-weight: bold;"/>&nbsp;
-            <h:outputText value="#{jsf22ViewBean.newName}"/>            
-        </h:panelGroup>
-
-        <hr/>
-
-        <h3>Navigate to the 'done' page using different methods then examine the heap (in NetBeans IDE or VisualVM)</h3>
+        <ui:include src="common_upper.xhtml">
+            <ui:param name="viewBean" value="#{jsf20ViewBean}"/>
+        </ui:include>
 
         <p>
             - <h:outputLink value="#{root}faces/done.xhtml">h:outputLink: GET: done</h:outputLink> 
-            : <span style="#{style_not_gc}">#{info_not_gc}</span>
+            : <span style="#{style_not}">#{info_not_gc}</span> <span style="#{style_not}">#{info_not_preDestroy}</span>
         </p>
 
         <p>
             - <h:link value="h:link: GET: done (no redirect)" outcome="done"/>
-            : <span style="#{style_not_gc}">#{info_not_gc} </span>
+            : <span style="#{style_not}">#{info_not_gc}</span> <span style="#{style_not}">#{info_not_preDestroy}</span>
         </p>
-        
+
         <p>
             - <h:link value="h:link: GET: done (with redirect)" outcome="done?faces-redirect=true"/>             
-            : <span style="#{style_not_gc}">#{info_not_gc} </span>
+            : <span style="#{style_not}">#{info_not_gc}</span> <span style="#{style_not}">#{info_not_preDestroy}</span>
         </p>
 
         <p>
             - <a href="#{root}faces/done.xhtml">HTML &lt;A&gt;: GET: done</a> 
-            : <span style="#{style_not_gc}">#{info_not_gc}</span>
+            : <span style="#{style_not}">#{info_not_gc}</span> <span style="#{style_not}">#{info_not_preDestroy}</span>
         </p>
 
         <fieldset><legend>Form</legend>        
             <h:form id="form">
 
                 <p>
-                    - <h:commandButton value="h:commandButton: TO 'done' via action method" action="#{jsf22ViewBean.actionDone()}"/>
-                    : <span style="#{style_yes_gc}">#{info_yes_gc}</span>
+                    - <h:commandButton value="h:commandButton: TO 'done' via action method" action="#{jsf20ViewBean.actionDone()}"/>
+                    : <span style="#{style_yes}">#{info_yes_gc}</span> <span style="#{style_yes}">#{info_yes_preDestroy}</span>
                 </p>
-                
+
                 <p>
                     - <h:commandButton value="h:commandButton: TO 'done' via action String" action="done"/>
-                    : <span style="#{style_yes_gc}">#{info_yes_gc}</span>
+                    : <span style="#{style_yes}">#{info_yes_gc}</span> <span style="#{style_yes}">#{info_yes_preDestroy}</span>
                 </p>
 
                 <hr/>
 
                 <p>
-                    - <h:commandButton value="h:commandButton: STAY: action method returns 'null'" action="#{jsf22ViewBean.actionNull()}"/> : no additional @ViewScoped bean created.
+                    - <h:commandButton value="h:commandButton: STAY: action method returns 'null'" action="#{jsf20ViewBean.actionNull()}"/> : no additional @ViewScoped bean created.
                 </p>
 
             </h:form>
@@ -96,7 +75,6 @@
             - <b>Browser reload of this page:</b> creates a new @ViewScoped bean, previous <span style="#{style_not_gc}">#{info_not_gc}</span>
         </p>
 
-        <hr/>
 
     </h:body>
 </html>

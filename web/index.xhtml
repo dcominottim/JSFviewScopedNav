@@ -4,31 +4,22 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <ui:param name="title" value="TEST: Compare @ViewScoped references in session by bean variation and navigation method"/>
-        
+        <ui:param name="title" value="TEST: Compare held @ViewScoped references by bean variation and navigation method"/>        
         <title>#{title}</title>
     </h:head>
-    
+
     <h:body>
 
-        <h1>#{title}</h1>
-   
-        <p>
-            <b>Author:</b> Darren Kelly (Webel IT Australia)
-        </p>
-
-        <p>
-            <em>
-                For comparison of heap memory references to various @ViewScoped beans after different navigation methods.
-            </em>
-        </p>
-
-        <p>
-            <ui:include src="common.xhtml"/>            
-        </p>
-
-        <hr/>
+        <ui:decorate template="params.xhtml"/>
         
+        <h2>#{title}</h2>
+
+        <ui:include src="header.xhtml">
+            <ui:param name="author" value="#{author}"/>
+            <ui:param name="beantype" value="various @ViewScoped beans"/>
+            <ui:param name="showHome" value="false"/>
+        </ui:include>
+
         <ui:include src="links.xhtml"/>
 
     </h:body>
