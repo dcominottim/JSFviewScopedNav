@@ -33,6 +33,7 @@ Use the JSF Mojarra version bundled with NetBeans8.1/Glassfish4.1.1 or install a
 
 To install by hand, stop your web app server and copy the Mojarra JAR to:
 
+.../NetBeans-8.1/glassfish-4.1.1/glassfish/modules/javax.faces.jar
 .../NetBeans-8.1/payara41/glassfish/modules/javax.faces.jar
 
 Then restart your server:
