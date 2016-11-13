@@ -4,10 +4,13 @@ Author: Darren Kelly (Webel IT Australia, https://www.webel.com.au)
 
 This mini test web app is for demonstration and investigation of when or whether 
 @PreDestroy methods are called and whether garbage collection succeeds for various 
-forms of @ViewScoped JavaServer Faces (JSF) beans.
+forms of @ViewScoped JavaServer Faces (JSF) beans. It accompanies this forum posting:
+
+    JSF: Mojarra vs. OmniFaces @ViewScoped: @PreDestroy called but bean can't be garbage collected
+    http://stackoverflow.com/questions/40569971/jsf-mojarra-vs-omnifaces-viewscoped-predestroy-called-but-bean-cant-be-gar
 
 This NetBeans IDE 8.1 project may be deployed to the bundled Glassfish 4.1.1 web app server
-(or within an additionally installed Payara41 web app server). Download from:
+(or to an additionally installed Payara41 web app server). Download from:
 
 - http://www.netbeans.org (required)
 
@@ -26,7 +29,7 @@ Use the JSF Mojarra version bundled with NetBeans8.1/Glassfish4.1.1 or install a
 
 -- Snapshots: https://maven.java.net/content/repositories/snapshots/org/glassfish/javax.faces/
  
-Visit also https://javaserverfaces.java.net/2.2/download.html.
+(Visit also https://javaserverfaces.java.net/2.2/download.html.)
 
 To install by hand, stop your web app server and copy the Mojarra JAR to:
 
@@ -34,14 +37,14 @@ To install by hand, stop your web app server and copy the Mojarra JAR to:
 
 Then restart your server:
 
-- The test web app will interrogate the Mojarra version and display it in the header of each web page.
+- The test web app interrogates the Mojarra version live and displays it in the header of each web page.
 
 
 JAVA VERSION
 
 For use with Java7 or Java8:
 
-- The test web app will interrogate the Java version and display it in the header of each web page.
+- The test web app interrogates the Java version and displays it in the header of each web page.
 
 
 DIAGNOSTIC TOOLS
@@ -72,9 +75,12 @@ In web.xml the application is set to use:
     com.sun.faces.numberOfLogicalViews 4
 
 
-By default this OmniFaces specific parameter is commented out:
+By default this OmniFaces-specific parameter is commented out:
 
     org.omnifaces.VIEW_SCOPE_MANAGER_MAX_ACTIVE_VIEW_SCOPES
+
+
+The javax.faces.STATE_SAVING_METHOD defaults to 'server'.
 
 
 
@@ -130,7 +136,7 @@ If using NetBeans IDE Profiler:
 -- This will run the project in profiling mode (and usually restarts the web app server too).
 
 - Under the Profile toolbar button use the pulldown (small down array right of Profile button)
-   to choose Telemetry (gives an overview) and Objects.
+  to choose Enable Multiple Modes then Telemetry (gives an overview) and Objects.
 
 - Click the settings gear wheel icon (top right).
 
@@ -138,8 +144,13 @@ If using NetBeans IDE Profiler:
 
     com.webel.jsf.Jsf20ViewBean, com.webel.jsf.Jsf22ViewBean, com.webel.jsf.OmniViewBean
 
+    Instances for them won't be shown in the Profiler until you choose a matching test page.
 
-DIAGNOSING THE VARIOUS JSF BEANS
+- Note how there is a rubbish bin icon/button for invoking Garbage Collection.
+
+
+
+DIAGNOSING THE VARIOUS JSF @ViewScoped BEANS
 
 The initial web page is an index to 3 test cases, one for each of the bean forms above:
 
@@ -198,12 +209,64 @@ and whether a bean is garbage collected you will need a systematic approach:
 You must be vigilant and watch carefully the number of instances of each bean type
 in your profiler at each stage.
 
-Finally, each test web page has clear diagnostics and hopefully instructions.
+
+ABOUT THE TEST PAGES AND NAVIGATION CASES
+
+Each test web page has hopefully clear instructions.
+
+Each test page (for each different @ViewScoped bean type) offers the same
+selection of navigation cases for leaving the view scope and landing at
+a target page done.xhtml.
+
+Access a desired test page initially from the top-level index page (Home),
+which page does NOT create any view scoped beans.
+
+There are 3 basic subsets of navigation cases:
+
+1. GET related navigation cases (no form):
+
+   (Please ignore the distinction between links with and without redirects,
+    that is for investigating something unrelated to the main concerns.)
+
+2. Form based navigation cases (no form):
+ 
+   A special case is remaining on the same view scoped page using 'null' navigation.
+
+3. Browser page reload.
+
+
+After navigating away from a test page to the target page you may:
+
+- Navigate back to the previous view scoped test page (or another).
+
+- Navigate back to the top-level home page (index.html).
+
+Again: be aware of diagnostics in both your profiler and server log window at all times.
+
+
+
+FURTHER READING
+
+The problem investigated by this test web app is discussed in this article by codebulb.ch,
+including some comparison between JSF @ViewScoped, CDI @ViewSCoped, and the Omnifaces @ViewScoped, 
+and a clear statement that JSF @ViewScoped is 'leaky by design': 
+
+    May 24, 2015 Java EE 7 Bean scopes compared part 2 of 2
+    http://www.codebulb.ch/2015/05/java-ee-7-bean-scopes-compared-part-2.html
+
+It is important to understand the available context parameters and their defaults for Mojarra:
+
+    Overview of all JSF-related web.xml context parameter names and values [closed]
+    http://stackoverflow.com/questions/17339830/overview-of-all-jsf-related-web-xml-context-parameter-names-and-values
+    
+    Monday, September 28, 2015
+    What Mojarra context parameters are available and what do they do?
+    http://balusc.omnifaces.org/2015/09/what-mojarra-context-parameters-are.html
+
+    com.sun.faces.numberOfViewsInSession vs com.sun.faces.numberOfLogicalViews
+    http://stackoverflow.com/questions/4105439/com-sun-faces-numberofviewsinsession-vs-com-sun-faces-numberoflogicalviews/16050424#16050424
 
 
 Hoping this helps other JSF enthusiasts with this subtle and important manner,
 
-
 Darren Kelly (Webel IT Australia)
-
-
