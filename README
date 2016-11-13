@@ -153,7 +153,7 @@ If using NetBeans IDE Profiler:
 
 DIAGNOSING THE VARIOUS JSF @ViewScoped BEANS
 
-The initial web page is an index to 3 test cases, one for each of the bean forms above:
+The initial web page is an index to 3 test cases, one for each of the bean forms below:
 
     import javax.faces.bean.ManagedBean;
     import javax.faces.bean.ViewScoped; // OBSOLETE JSF2.0 style
@@ -178,22 +178,21 @@ The initial web page is an index to 3 test cases, one for each of the bean forms
     public class OmniViewBean extends AbstractViewBean {
 
 
-- Each test page creates (usually) a new @ViewScoped bean when first loaded.
+Each test page creates (usually) a new @ViewScoped bean when first loaded.
+Of interest is what happens to referenced beans once the view page is left
+(whereby the result depends on the bean type and navigation method used).
 
-- Of interest is what happens to referenced beans once the view page is left
-  (whereby the result depends on the bean type and navigation method used).
+- Concern1: Are any @PreDestroy invoked so there is an opportunity to clean up resources ?
 
--- Concern1: Are any @PreDestroy invoked so there is an opportunity to clean up resources ?
+- Concern2: Can the @ViewScoped bean itself be garbage collected ?
 
--- Concern2: Can the @ViewScoped bean itself be garbage collected ?
+-- Concern2a: Can the @ViewScoped bean be immediately garbage collected ?
 
---- Concern2a: Can the @ViewScoped bean be immediately garbage collected ?
-
---- Concern2b: Can the @ViewScoped bean be garbage collected later 
+-- Concern2b: Can the @ViewScoped bean be garbage collected later 
     (such as when the logical number of view is hit, or the session ends) ?
 
-VERY IMPORTANT: The test web app here is primarily for immediate garbage collection (Concern2b),
-and while it can be used to address (Concern2b, later collection) the published results 
+VERY IMPORTANT: The test web app here is primarily for immediate garbage collection (Concern2a),
+and while it can be used to investigate (Concern2b, later collection) the published test results 
 don't address that aspect !
 
 IMPORTANT: in order to observe when and/or whether @PreDestroy is invoked
@@ -203,7 +202,7 @@ and whether a bean is garbage collected you will need a systematic approach:
 
 2. Invocations of @PostConstruct and @PreDestroy methods are logged to the server console.
    Use the NetBeans server log console window, and clear it BEFORE loading each test page
-   and AFTER navigating away from each test page (but not before noting the output).
+   and AFTER navigating away from each test page (but not before first noting the output).
 
 3. Use the Perform GC function in your profile AFTER navigating away from each test page.
 
@@ -217,23 +216,28 @@ Each test web page has hopefully clear instructions.
 
 Each test page (for each different @ViewScoped bean type) offers the same
 selection of navigation cases for leaving the view scope and landing at
-a target page done.xhtml.
+a target page done.xhtml (which page does not use any view scoped beans).
 
 Access a desired test page initially from the top-level index page (Home),
-which page does NOT create any view scoped beans.
+which page likewise does NOT use or create any view scoped beans.
 
 There are 3 basic subsets of navigation cases:
 
-1. GET related navigation cases (no form):
+1. GET related navigation cases (no form): h:link, h:outputLink, and HTML <a>
 
    (Please ignore the distinction between links with and without redirects,
     that is for investigating something unrelated to the main concerns.)
 
-2. Form based navigation cases (no form):
+2. Form based navigation cases (no form): 
+  
+   - h:commandButton with action String and h:commandButton with action method return String.
  
-   A special case is remaining on the same view scoped page using 'null' navigation.
+   - A special case is remaining on the same view scoped page using 'null' navigation.
 
-3. Browser page reload.
+3. Web browser's page reload action.
+
+(An additional special case, not included in the results table, is a GET on the web browser URL,
+which case might be used during facelets development, but is not usually used by novice users.)
 
 
 After navigating away from a test page to the target page you may:
