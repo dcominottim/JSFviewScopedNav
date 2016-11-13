@@ -1,7 +1,7 @@
 package com.webel.jsf;
 
 import java.util.logging.Logger;
-import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedBean; //OBSOLETE JSF2.0 style
 import javax.faces.bean.ViewScoped;
 
 /**

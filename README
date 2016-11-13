@@ -1,0 +1,209 @@
+Investigation of undesirable holding of references to various forms of JSF @ViewScoped beans by navigation type
+
+Author: Darren Kelly (Webel IT Australia, https://www.webel.com.au)
+
+This mini test web app is for demonstration and investigation of when or whether 
+@PreDestroy methods are called and whether garbage collection succeeds for various 
+forms of @ViewScoped JavaServer Faces (JSF) beans.
+
+This NetBeans IDE 8.1 project may be deployed to the bundled Glassfish 4.1.1 web app server
+(or within an additionally installed Payara41 web app server). Download from:
+
+- http://www.netbeans.org (required)
+
+- http://www.payara.fish (optional)
+
+
+
+MOJARRA JSF IMPLEMENTATION VERSION
+
+Currently the web app is for demonstration against the Mojarra 2.x JSF implementation series.
+Use the JSF Mojarra version bundled with NetBeans8.1/Glassfish4.1.1 or install a recent version:
+
+- Use Maven or download javax.faces.jar directly from:
+
+-- Releases: https://maven.java.net/content/repositories/releases/org/glassfish/javax.faces/
+
+-- Snapshots: https://maven.java.net/content/repositories/snapshots/org/glassfish/javax.faces/
+ 
+Visit also https://javaserverfaces.java.net/2.2/download.html.
+
+To install by hand, stop your web app server and copy the Mojarra JAR to:
+
+.../NetBeans-8.1/payara41/glassfish/modules/javax.faces.jar
+
+Then restart your server:
+
+- The test web app will interrogate the Mojarra version and display it in the header of each web page.
+
+
+JAVA VERSION
+
+For use with Java7 or Java8:
+
+- The test web app will interrogate the Java version and display it in the header of each web page.
+
+
+DIAGNOSTIC TOOLS
+
+You will need a tool for diagnosing memory use and references to instances of JSF beans:
+
+- You can use the Profiler within NetBeans IDE.
+
+- Optionally - if not already bundled with your JDK as 'jvisualvm' - 
+  download and install VisualVM from https://visualvm.java.net/
+
+
+ON USE OF OMNIFACES
+
+This test web app compares JSF and CDI bean view scopes with the 3rd-party OmniFaces JSF toolkit view scope:
+
+- An OmniFaces library is included with the project under ./lib
+
+- Please visit and read also: http://showcase.omnifaces.org/cdi/ViewScoped
+
+
+ON USE OF JSF VIEW SCOPE CONTEXT PARAMETERS
+
+In web.xml the application is set to use:
+
+    com.sun.faces.numberOfViewsInSession 4
+
+    com.sun.faces.numberOfLogicalViews 4
+
+
+By default this OmniFaces specific parameter is commented out:
+
+    org.omnifaces.VIEW_SCOPE_MANAGER_MAX_ACTIVE_VIEW_SCOPES
+
+
+
+HOWTO RUN AND USE THE TEST WEB APP
+
+
+STEP: Open the project in NetBeans IDE and the Project Properties:
+
+- Under Libraries set the Java Platform to JDK1.8 (if available), otherwise JDK1.7.
+
+- Under Run set the server to Glassfish4.1.1 or Payara41 (if installed).
+
+-- Be sure to check that you choose a server with the desired Mojarra version installed (see above).
+
+The folder ./nbproject/private is NOT distributed with the test web app, so these settings are local.
+
+
+STEP: clean and build.
+
+The procedure is then slightly different depending on whether you use 
+VisualVM (recommended) or the NetBeans built-in Profiler.
+
+
+If using VisualVM:
+
+- Run the project, it should start your web app server and deploy the test web app,
+  which will open in whatever web browser you have set as default in NetBeans IDE.
+
+- Then (after it has launched) run 'jvisualvm' from a terminal command line.
+
+- In VisualVM you'll see 'GlassFish' as a process (Payara also runs as 'GlassFish').
+
+- Open that 'GlassFish' process (use right click context menu).
+
+- Click on the Monitor tab and note how you can observe the 
+  Garbage Collection (GC) activity under CPU (top left)
+
+- Choose the Sampler tab then Memory.
+
+- Note how there is a button to Perform GC.
+
+- Under the Class Name Filter at the bottom enter 'com.webel.jsf'
+
+-- Initially you will only see one instance of a helper class: com.webel.jsf.JavaUtil.
+
+-- Later (once you start loading test pages) you will see instances of various @ViewScoped beans.
+
+
+If using NetBeans IDE Profiler:
+
+- DO NOT use the usual Run button, use instead Profile (right click context menu on Project node).
+
+-- This will run the project in profiling mode (and usually restarts the web app server too).
+
+- Under the Profile toolbar button use the pulldown (small down array right of Profile button)
+   to choose Telemetry (gives an overview) and Objects.
+
+- Click the settings gear wheel icon (top right).
+
+-- Choose to Profile Selected classes, then select these 3 classes:
+
+    com.webel.jsf.Jsf20ViewBean, com.webel.jsf.Jsf22ViewBean, com.webel.jsf.OmniViewBean
+
+
+DIAGNOSING THE VARIOUS JSF BEANS
+
+The initial web page is an index to 3 test cases, one for each of the bean forms above:
+
+    import javax.faces.bean.ManagedBean;
+    import javax.faces.bean.ViewScoped; // OBSOLETE JSF2.0 style
+    @ManagedBean
+    @ViewScoped
+    public class Jsf20ViewBean extends AbstractViewBean {
+
+
+
+    import javax.inject.Named;
+    import javax.faces.view.ViewScoped; // CDI-compatible JSF2.2 version
+    @Named
+    @ViewScoped
+    public class Jsf22ViewBean extends AbstractViewBean {
+
+
+
+    import javax.inject.Named;
+    import org.omnifaces.cdi.ViewScoped; // 3rd party CDI-compatible
+    @Named
+    @ViewScoped
+    public class OmniViewBean extends AbstractViewBean {
+
+
+- Each test page creates (usually) a new @ViewScoped bean when first loaded.
+
+- Of interest is what happens to referenced beans once the view page is left
+  (whereby the result depends on the bean type and navigation method used).
+
+-- Concern1: Are any @PreDestroy invoked so there is an opportunity to clean up resources ?
+
+-- Concern2: Can the @ViewScoped bean itself be garbage collected ?
+
+--- Concern2a: Can the @ViewScoped bean be immediately garbage collected ?
+
+--- Concern2b: Can the @ViewScoped bean be garbage collected later 
+    (such as when the logical number of view is hit, or the session ends) ?
+
+VERY IMPORTANT: The test web app here is primarily for immediate garbage collection (Concern2b),
+and while it can be used to address (Concern2b, later collection) the published results 
+don't address that aspect !
+
+IMPORTANT: in order to observe when and/or whether @PreDestroy is invoked
+and whether a bean is garbage collected you will need a systematic approach:
+
+1. Use the Perform GC function in your profiler BEFORE loading each test page.
+
+2. Invocations of @PostConstruct and @PreDestroy methods are logged to the server console.
+   Use the NetBeans server log console window, and clear it BEFORE loading each test page
+   and AFTER navigating away from each test page (but not before noting the output).
+
+3. Use the Perform GC function in your profile AFTER navigating away from each test page.
+
+You must be vigilant and watch carefully the number of instances of each bean type
+in your profiler at each stage.
+
+Finally, each test web page has clear diagnostics and hopefully instructions.
+
+
+Hoping this helps other JSF enthusiasts with this subtle and important manner,
+
+
+Darren Kelly (Webel IT Australia)
+
+

@@ -1,7 +1,7 @@
 package com.webel.jsf;
 
 import javax.inject.Named;
-import org.omnifaces.cdi.ViewScoped;
+import org.omnifaces.cdi.ViewScoped; // 3rd party CDI-compatible
 
 /**
  *
