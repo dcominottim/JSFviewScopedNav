@@ -228,7 +228,7 @@ There are 3 basic subsets of navigation cases:
    (Please ignore the distinction between links with and without redirects,
     that is for investigating something unrelated to the main concerns.)
 
-2. Form based navigation cases (no form): 
+2. Form based navigation cases: 
   
    - h:commandButton with action String and h:commandButton with action method return String.
  
