@@ -55,7 +55,7 @@ You will need a tool for diagnosing memory use and references to instances of JS
 - You can use the Profiler within NetBeans IDE.
 
 - Optionally - if not already bundled with your JDK as 'jvisualvm' - 
-  download and install VisualVM from https://visualvm.java.net/
+  download and install VisualVM from https://visualvm.github.io/
 
 
 ON USE OF OMNIFACES
@@ -253,7 +253,7 @@ Again: be aware of diagnostics in both your profiler and server log window at al
 FURTHER READING
 
 The problem investigated by this test web app is discussed in this article by codebulb.ch,
-including some comparison between JSF @ViewScoped, CDI @ViewSCoped, and the Omnifaces @ViewScoped, 
+including some comparison between JSF @ViewScoped, CDI @ViewScoped, and the Omnifaces @ViewScoped, 
 and a clear statement that JSF @ViewScoped is 'leaky by design': 
 
     May 24, 2015 Java EE 7 Bean scopes compared part 2 of 2
